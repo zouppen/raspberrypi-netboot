@@ -1,0 +1,23 @@
+#!/bin/sh -e
+
+PREREQ=""
+
+prereqs()
+{
+	echo "${PREREQ}"
+}
+
+case "${1}" in
+	prereqs)
+		prereqs
+		exit 0
+		;;
+esac
+
+. /usr/share/initramfs-tools/hook-functions
+
+# File locking tool
+copy_exec /opt/hacklab/locknloop /usr/bin
+
+# Add modules. All not needed by Ubuntu but Debian
+manual_add_modules netconsole virtio_blk btrfs loop zstd

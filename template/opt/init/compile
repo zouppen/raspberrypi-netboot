@@ -1,0 +1,13 @@
+#!/bin/sh -eu
+
+# Set up compile time user compile tools
+useradd -r -b /opt/init -m init
+su init /opt/init/compile-as-init
+
+# Deploy tools
+mkdir -p /opt/hacklab/
+mv ~init/locknloop/locknloop /opt/hacklab/
+chown root:root /opt/hacklab/locknloop
+
+# Clean up
+userdel -r init 

@@ -1,0 +1,17 @@
+[Unit]
+Description=Workstation updates
+After=mnt-root-update.mount
+Requires=mnt-root-update.mount
+After=basic.target
+Requires=basic.target
+OnSuccess=poweroff.target
+OnFailure=poweroff.target
+
+[Service]
+Type=oneshot
+TimeoutStartSec=1h
+StandardOutput=journal+console
+StandardError=journal+console
+ExecStart=/mnt/root/update/update
+Restart=on-failure
+RestartSec=5s

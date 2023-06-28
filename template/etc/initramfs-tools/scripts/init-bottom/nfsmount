@@ -1,0 +1,40 @@
+#!/bin/sh -eu
+
+case ${1-} in
+    prereqs)
+	echo
+	exit 0
+	;;
+esac
+
+if test "${nfsfile+x}"; then
+    # Loop mounting over NFS 
+
+    # Move NFS root out of the way
+    mkdir /nfs
+    mount -o move /root /nfs
+
+    # Lock and get loop device before mounting
+    modprobe loop
+    loopdev="`locknloop "/nfs/$nfsfile" 600`" || poweroff
+
+    # Symlink root
+    ln -s "$loopdev" /dev/lab-root
+
+    # Creating loop first since -o ro makes loop0 read-only otherwise
+    mount -t btrfs -o ro "$loopdev" /root
+
+    # Mark loop device as autoclear
+    losetup -d "$loopdev"
+    
+    # Make NFS available in the system as /mnt/root/nfs
+    mount -o move /nfs /root/mnt/root/nfs
+else
+    # QEMU environment
+
+    # To keep emulated system similar to real one, obtain an IP this early
+    dhclient || ipconfig eth0
+
+    # Symlink root
+    ln -s "$ROOT" /dev/lab-root
+fi

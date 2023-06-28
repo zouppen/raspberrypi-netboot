@@ -1,0 +1,36 @@
+#!/bin/bash
+
+set -e
+
+PREREQ=""
+
+prereqs()
+{
+	echo "${PREREQ}"
+}
+
+case "${1}" in
+	prereqs)
+		prereqs
+		exit 0
+		;;
+esac
+
+. /usr/share/initramfs-tools/hook-functions
+
+# Hooks for loading nfsv4 support into the initramfs
+
+if [ -x /sbin/mount.nfs ]
+then
+	copy_exec /sbin/mount.nfs /sbin
+	ln -s mount.nfs ${DESTDIR}/sbin/mount.nfs4
+	ln -s mount.nfs ${DESTDIR}/sbin/nfsmount
+
+	for lib in `ldd /sbin/mount.nfs | cut -d'>' -f2 | awk '{print $1}'`; do
+		if [ -f "$lib" ]; then
+			cp -L --parents "$lib" ${DESTDIR}
+		fi
+	done
+fi
+
+exit 0
