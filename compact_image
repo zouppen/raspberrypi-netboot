@@ -1,0 +1,37 @@
+#!/bin/sh -eu
+
+cleanup () {
+    set +e
+    trap - EXIT INT
+
+    cd /
+    umount -l "$mountdir"
+    rmdir "$mountdir"
+}
+
+if test $# -ne 1 -o "$(whoami)" != root; then
+    echo "Usage: sudo $0 IMAGE_FILE" >&2
+    exit 1
+fi
+
+image="$1"
+mountdir="$(mktemp -d)"
+
+trap cleanup EXIT INT
+
+# Mounting file system with compression enabled
+mount -o compress=zstd,discard=sync,nossd,subvol=/ "$image" "$mountdir"
+cd "$mountdir"
+
+if test "$(stat --format=%i root)" -eq 256; then
+    echo "Subvolume already created, defragging only..."
+else
+    # Create subvolume and move the files there hacky way
+    btrfs subvolume create WORK
+    find . -mindepth 1 -maxdepth 1 -path ./WORK -prune -o -print0 | xargs -0 mv --target-directory=WORK
+    mv WORK root
+    btrfs subvolume set-default root    
+fi
+
+# Compress
+btrfs filesystem defragment -r -czstd root

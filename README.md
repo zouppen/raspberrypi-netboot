@@ -12,8 +12,14 @@ everything is done in a modified user namespace.
 ./generate_image image.img
 ```
 
-The file is not compressed and has no btrfs submodules so if you want them,
-mount the partition manually and defrag.
+The file is not compressed and has no btrfs submodules.
+
+There is a script which creates subvolume `root`, sets it as default and compresses all
+files in there with zstd:
+
+```
+sudo ./compact_image image.img
+```
 
 Mount the image and read `/boot` directory from there to your TFTP root.
 
