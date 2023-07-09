@@ -12,10 +12,10 @@ everything is done in a modified user namespace.
 ./generate_image image.img
 ```
 
-The file is not compressed and has no btrfs submodules.
-
-There is a script which creates subvolume `root`, sets it as default and compresses all
-files in there with zstd:
+The resulting file system is not compressed and has no btrfs
+submodules. Those are not mandatory. But if you want, there is a
+script which creates subvolume `root`, sets it as default and
+compresses all files in there with zstd:
 
 ```
 sudo ./compact_image image.img
