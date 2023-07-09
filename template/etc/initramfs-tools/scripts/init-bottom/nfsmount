@@ -14,13 +14,21 @@ if test "${nfsfile+x}"; then
     mkdir /nfs
     mount -o move /root /nfs
 
-    # Lock and get loop device before mounting. Modprobe fails if
-    # module is built-in.
-    modprobe loop || true
-    loopdev="`locknloop "/nfs/$nfsfile" 600`" || poweroff
+    if test -f /keyfile; then
+	# Encrypted root. Locking TODO
+	cryptsetup --key-file=/keyfile open "/nfs/$nfsfile" root
 
-    # Symlink root
-    ln -s "$loopdev" /dev/net-root
+	# Symlink root
+	ln -s /dev/mapper/root /dev/net-root
+    else
+	# Lock and get loop device before mounting. Modprobe fails if
+	# module is built-in.
+	modprobe loop || true
+	loopdev="`locknloop "/nfs/$nfsfile" 600`" || poweroff
+
+	# Symlink root
+	ln -s "$loopdev" /dev/net-root
+    fi
 
     # Creating loop first since -o ro makes loop0 read-only otherwise
     mount -t btrfs -o ro /dev/net-root /root
