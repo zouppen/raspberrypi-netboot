@@ -10,6 +10,8 @@ physical isolation.
 
 ## Requirements
 
+Raspberry Pi 3 or newer is required.
+
 First, install
 [raspberrypi-podman](https://github.com/zouppen/raspberrypi-podman)
 and run `convert_rpi_to_podman` with a image of your choice.
@@ -52,6 +54,16 @@ rw root=/dev/nfs nfsroot=/srv/nfs/info,nfsvers=4.2 nfsfile=btrfs.img apparmor=0 
 ```
 
 Adding `net.ifnames=0` and `apparmor=0` is optional but helps to solve issues with NFS booting.
+
+## Preparing Raspi for network booting
+
+See [How to PXE boot a Raspberry](https://www.howtoraspberry.com/2022/03/how-to-pxe-boot-a-raspberry/) for instructions how to set boot order and boot settings on your Raspi.
+
+## Preparing server
+
+TODO container which runs all the necessary tools. Meanwhile, you need
+to set up your dnsmasq with DHCP and TFTP and also NFSv4 server
+somewhere.
 
 ## Author
 
