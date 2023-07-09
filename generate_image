@@ -1,0 +1,39 @@
+#!/bin/sh -eu
+
+cleanup () {
+    set +e
+    trap - EXIT INT
+
+    if test "${container+x}"; then
+	podman rm "$container"
+    fi
+    if test "${mountpoint+x}"; then
+	sudo umount -l "$mountpoint"
+	rmdir "$mountpoint"
+    fi
+}
+
+if test $# -ne 2; then
+    echo "Usage $0 PODMAN_IMAGE TARGET_FILE" >&2
+    exit 1
+fi
+
+image="$1"
+target="$2"
+size=4G
+
+trap cleanup EXIT INT
+
+# Creating image and btrfs filesystem on it
+truncate -s "$size" "$target"
+mkfs.btrfs -f "$target"
+
+# Mounting, creating subvolume
+mountpoint="$(mktemp -d)"
+sudo mount "$target" "$mountpoint"
+sudo btrfs subvolume create "$mountpoint/root"
+sudo btrfs subvolume set-default "$mountpoint/root"
+
+# Exporting container to the image
+container="$(podman create "$image")"
+podman export "$container" | sudo tar -C "$mountpoint/root" -x
