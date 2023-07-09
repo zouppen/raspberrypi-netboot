@@ -1,5 +1,0 @@
-#!/bin/sh -eu
-
-for joo in /lib/modules/*; do
-    update-initramfs -u -k "$(basename "$joo")"
-done

@@ -1,0 +1,9 @@
+#!/bin/sh -eu
+
+# Generate initramfs for the first time
+for kernel in /lib/modules/*; do
+    update-initramfs -u -k "$(basename "$kernel")"
+done
+
+# Configure zram percentage
+sed -ir 's/^#*[[:space:]]*PERCENT[[:space:]]*=.*/PERCENT=50/' /etc/default/zramswap

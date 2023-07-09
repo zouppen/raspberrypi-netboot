@@ -13,6 +13,8 @@ RUN apt-get -y install \
     zstd \
     cryptsetup \
     cryptsetup-initramfs \
+    zram-tools \
+    earlyoom \
     network-manager- \
     dphys-swapfile-
 RUN apt-get clean
@@ -21,7 +23,7 @@ RUN apt-get clean
 COPY --chown=root:root template /
 
 RUN /opt/init/compile
-RUN /opt/init/initramfs
+RUN /opt/init/configure
 
 ENV DEBIAN_FRONTEND=
 CMD [ "/sbin/init" ]
