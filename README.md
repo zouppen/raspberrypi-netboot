@@ -1,6 +1,24 @@
-# Netbooting raspi
+# Network booting Raspberry Pi
 
-Based on https://github.com/zouppen/raspberrypi-podman so first install that container.
+This converts a Raspberry Pi container to a network booting
+image. That allows you to run a Raspberry Pi without an SD card.
+
+The goal is to allow radio tower installation of with no wearing parts
+like an SD card. Also the files are safu because the system and disk
+server can be separated by a fiber connection or other means of
+physical isolation.
+
+## Requirements
+
+First, install
+[raspberrypi-podman](https://github.com/zouppen/raspberrypi-podman)
+and run `convert_rpi_to_podman` with a image of your choice.
+
+Additional Debian/Ubuntu requirements:
+
+```sh
+sudo apt install qemu-user-static podman btrfs-progs
+```
 
 ## Dumping the image for NFS and TFTP
 
