@@ -20,10 +20,10 @@ if test "${nfsfile+x}"; then
     loopdev="`locknloop "/nfs/$nfsfile" 600`" || poweroff
 
     # Symlink root
-    ln -s "$loopdev" /dev/lab-root
+    ln -s "$loopdev" /dev/net-root
 
     # Creating loop first since -o ro makes loop0 read-only otherwise
-    mount -t btrfs -o ro "$loopdev" /root
+    mount -t btrfs -o ro /dev/net-root /root
 
     # Mark loop device as autoclear
     losetup -d "$loopdev"
@@ -37,5 +37,5 @@ else
     dhclient || ipconfig eth0
 
     # Symlink root
-    ln -s "$ROOT" /dev/lab-root
+    ln -s "$ROOT" /dev/net-root
 fi
