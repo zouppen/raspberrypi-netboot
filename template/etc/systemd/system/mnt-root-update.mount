@@ -1,0 +1,11 @@
+[Unit]
+Description=Updater mount
+DefaultDependencies=no
+StopWhenUnneeded=true
+ConditionPathExists=/sys/module/9pnet_virtio
+
+[Mount]
+Where=/mnt/root/update
+What=update
+Type=9p
+Options=ro,trans=virtio,version=9p2000.L

@@ -1,0 +1,1 @@
+/dev/lab-root	/	btrfs	compress=zstd,discard=sync,nossd

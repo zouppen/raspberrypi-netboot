@@ -1,0 +1,3 @@
+#!/bin/sh -eu
+ln -s "$2" /boot/initrd.img
+# move to relative link instead of absolute

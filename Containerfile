@@ -4,7 +4,7 @@ FROM raspios-bullseye-arm64-lite
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update
 RUN apt-get -y upgrade
-RUN apt-get -y install
+RUN apt-get -y install \
     --auto-remove --purge --no-install-suggests --no-install-recommends \
     git \
     libklibc-dev \
@@ -13,6 +13,7 @@ RUN apt-get -y install
     zstd \
     cryptsetup \
     cryptsetup-initramfs \
+    network-manager- \
     dphys-swapfile-
 RUN apt-get clean
 
@@ -20,10 +21,7 @@ RUN apt-get clean
 COPY --chown=root:root template /
 
 RUN /opt/init/compile
-
-# DONE: Machine id:n generointi kunnossa
-
-# TODO initramfs generation + initramfs image naming
+RUN /opt/init/initramfs
 
 ENV DEBIAN_FRONTEND=
 CMD [ "/sbin/init" ]

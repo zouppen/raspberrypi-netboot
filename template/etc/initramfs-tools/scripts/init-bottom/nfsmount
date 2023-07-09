@@ -14,8 +14,9 @@ if test "${nfsfile+x}"; then
     mkdir /nfs
     mount -o move /root /nfs
 
-    # Lock and get loop device before mounting
-    modprobe loop
+    # Lock and get loop device before mounting. Modprobe fails if
+    # module is built-in.
+    modprobe loop || true
     loopdev="`locknloop "/nfs/$nfsfile" 600`" || poweroff
 
     # Symlink root
