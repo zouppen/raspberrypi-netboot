@@ -1,23 +1,10 @@
 #!/bin/sh -eu
 
-cleanup () {
-    set +e
-    trap - EXIT INT
-
-    podman image umount "$image"
-}
-
-if test $# -ne 2 -o "$(whoami)" != root; then
-    echo "Usage: podman unshare $0 PODMAN_IMAGE TARGET_FILE" >&2
+if test $# -ne 1; then
+    echo "Usage: $0 TARGET_FILE" >&2
     exit 1
 fi
 
-image="$1"
-target="$2"
-size=4G
-
-trap cleanup EXIT INT
-
-# Creating image and btrfs filesystem on it
-root="$(podman image mount "$image")"
-mkfs.btrfs -b "$size" -r "$root" "$target"
+scriptdir="$(dirname "$0")"
+podman build -t raspi-netboot "$scriptdir"
+podman unshare "$scriptdir/internal/export_btrfs" raspi-netboot "$1"
