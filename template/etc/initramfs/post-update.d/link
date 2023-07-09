@@ -1,3 +1,4 @@
 #!/bin/sh -eu
-ln -s "$2" /boot/initrd.img
-# move to relative link instead of absolute
+#
+# Add or update relative symlink for initrd
+ln -srf "$2" /boot/initrd.img
