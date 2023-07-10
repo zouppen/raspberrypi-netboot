@@ -4,7 +4,7 @@ This converts a Raspberry Pi container to a network booting
 image. That allows you to run a Raspberry Pi without an SD card.
 
 The goal is to allow radio tower installation of with no wearing parts
-like an SD card. Also the files are safu because the system and disk
+like an SD card. All files are safu because the system and disk
 server can be separated by a fiber connection or other means of
 physical isolation.
 
