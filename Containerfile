@@ -20,11 +20,13 @@ RUN apt-get -y install \
     dphys-swapfile-
 RUN apt-get clean
 
-# Configure
+# Install our customizations
 COPY --chown=root:root template /
-
 RUN /opt/init/compile
 RUN /opt/init/configure
 
+# Cleanup
+RUN rm -r /opt/init
 ENV DEBIAN_FRONTEND=
+
 CMD [ "/sbin/init" ]
