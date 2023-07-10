@@ -11,6 +11,7 @@ RUN apt-get -y install \
     nfs-common \
     btrfs-progs \
     zstd \
+    bindfs \
     cryptsetup \
     cryptsetup-initramfs \
     zram-tools \

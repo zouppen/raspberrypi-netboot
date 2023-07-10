@@ -1,1 +1,2 @@
-/dev/net-root	/	btrfs	compress=zstd,discard=sync,nossd
+/dev/net-root		/	btrfs		compress=zstd,discard=sync,nossd
+/mnt/root/nfs/boot	/boot	fuse.bindfs	force-user=root,force-group=root,chown-ignore,chgrp-ignore
