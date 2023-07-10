@@ -12,7 +12,7 @@ sed -ir 's/^#*[[:space:]]*PERCENT[[:space:]]*=.*/PERCENT=50/' /etc/default/zrams
 echo 'initramfs initrd.img followkernel' >>/boot/config.txt
 
 # Update cmdline.txt
-sed -ir -f - /boot/cmdline.txt <<EOF
+sed -i -rf - /boot/cmdline.txt <<EOF
 # Add spaces in the start and end
 s|.*| \0 |
 # Remove parameters we either replace or don't want
