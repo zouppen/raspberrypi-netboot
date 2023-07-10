@@ -21,10 +21,16 @@ if test "${nfsfile+x}"; then
 	# Symlink root
 	ln -s /dev/mapper/root /dev/net-root
     else
+	if test "${nfscopy+x}"; then
+	    lockargs="-c/nfs/$nfscopy"
+	else
+	    lockargs=
+	fi
+
 	# Lock and get loop device before mounting. Modprobe fails if
 	# module is built-in.
 	modprobe loop || true
-	loopdev="`locknloop "/nfs/$nfsfile" 600`" || poweroff
+	loopdev="`locknloop $lockargs -t 600 "/nfs/$nfsfile"`" || poweroff
 
 	# Symlink root
 	ln -s "$loopdev" /dev/net-root

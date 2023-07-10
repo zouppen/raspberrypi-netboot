@@ -1,9 +1,9 @@
 #!/bin/sh -eu
 
-LOCKNLOOP_HASH=d127312e3b98630c4a04cd780cd8cbdbddc85fc0
+LOCKNLOOP_HASH=6ed5ff97f65d8bac2e7ed6ce1b31885346f9b767
 
 cd
 git clone -n https://github.com/zouppen/locknloop.git
 cd locknloop
 git checkout "$LOCKNLOOP_HASH"
-klcc -s -static -o locknloop locknloop.c
+gcc -s -Wall -Os -o locknloop locknloop.c
