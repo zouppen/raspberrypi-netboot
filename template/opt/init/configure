@@ -7,3 +7,24 @@ done
 
 # Configure zram percentage
 sed -ir 's/^#*[[:space:]]*PERCENT[[:space:]]*=.*/PERCENT=50/' /etc/default/zramswap
+
+# Update config.txt
+echo 'initramfs initrd.img followkernel' >>/boot/config.txt
+
+# Update cmdline.txt
+sed -ir -f - /boot/cmdline.txt <<EOF
+# Add spaces in the start and end
+s|.*| \0 |
+# Remove parameters we either replace or don't want
+s| root=[^ ]*||
+s| rootfstype=[^ ]*||
+s| nfsroot=[^ ]*||
+s| nfsfile=[^ ]*||
+s| apparmor=[^ ]*||
+s| net\.ifnames=[^ ]*||
+s| r[ow] | |
+# Remove heading space
+s|^ *||
+# Append our parameters
+s|$|apparmor=0 net.ifnames=0 rw root=/dev/nfs nfsfile=btrfs.img nfsroot=/srv/nfs/YOURPATH,nfsvers=4.2|
+EOF
