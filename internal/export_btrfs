@@ -4,11 +4,12 @@ cleanup () {
     set +e
     trap - EXIT INT
 
+    test "${root+x}" && umount "$root/boot"
     podman image umount "$image"
 }
 
 if test $# -ne 2 -o "$(whoami)" != root; then
-    echo "Usage: podman unshare $0 PODMAN_IMAGE TARGET_FILE" >&2
+    echo "Usage: podman unshare $0 PODMAN_IMAGE TARGET_DIR" >&2
     exit 1
 fi
 
@@ -18,6 +19,13 @@ size=4G
 
 trap cleanup EXIT INT
 
-# Creating image and btrfs filesystem on it
+# Preparation
+mkdir -p "$target"
 root="$(podman image mount "$image")"
-mkfs.btrfs -b "$size" -r "$root" "$target"
+
+# Extract boot directory
+rsync -a "$root/boot" "$target/"
+
+# Create btrfs image without /boot directory contents
+mount -t tmpfs hide "$root/boot"
+mkfs.btrfs -b "$size" -r "$root" "$target/btrfs.img"
