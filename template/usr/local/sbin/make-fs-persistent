@@ -1,0 +1,27 @@
+#!/bin/sh -eu
+
+fail () {
+    echo "$@" >&2
+    exit 1
+}
+
+for arg in $(cat /proc/cmdline); do
+    case "$arg" in
+	nfsfile=*)
+	    nfsfile="${arg#nfsfile=}"
+	    ;;
+	nfscopy=*)
+	    nfscopy="${arg#nfscopy=}"
+	    ;;
+    esac
+done
+
+test "${nfsfile+x}"     || fail "Not a netbooting setup"
+test "${nfscopy+x}"     || fail "System is booted in persistent state"
+test "$(whoami)" = root || fail "Superuser privileges required"
+cd /mnt/root/nfs        || fail "NFS is not properly mounted"
+test -f "$nfsfile"      || fail "System is already made persistent"
+
+mv "$nfsfile" "$nfscopy" 
+echo "All changes made in this boot are now persistent."
+echo "Please shutdown cleanly when you're done."
